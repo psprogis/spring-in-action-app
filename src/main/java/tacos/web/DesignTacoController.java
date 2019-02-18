@@ -52,7 +52,7 @@ public class DesignTacoController {
 	
 	@PostMapping
 	public String processDesign(@Valid Taco design, Errors errors) {
-		// log.info("processing design");
+		log.info("processing design...");
 		if (errors.hasErrors()) {
 			return "design";
 		}

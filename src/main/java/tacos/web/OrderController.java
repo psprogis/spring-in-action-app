@@ -31,9 +31,8 @@ public class OrderController {
 			return "orderForm";
 		}
 		
-		log.info("order submitted");
+		log.info("order submitted: " + order);
 		
 		return "redirect:/";
 	}
-	
 }

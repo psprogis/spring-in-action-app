@@ -12,6 +12,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import lombok.extern.slf4j.Slf4j;
 import tacos.Ingredient;
@@ -23,13 +24,13 @@ import tacos.Taco;
 @RequestMapping("/design")
 public class DesignTacoController {
 	
-	@GetMapping
-	public String showDesignForm(Model model) {
+	@ModelAttribute
+	public void addIngredientsToModel(Model model) {
         List<Ingredient> ingredients = Arrays.asList(
             new Ingredient("FLTO", "Flour Tortilla", Type.WRAP),
             new Ingredient("COTO", "Corn Tortilla", Type.WRAP),
-            new Ingredient("GRBF", "Ground Beef", Type.PROTIEN),
-            new Ingredient("CARN", "Carnitas", Type.PROTIEN),
+            new Ingredient("GRBF", "Ground Beef", Type.PROTEIN),
+            new Ingredient("CARN", "Carnitas", Type.PROTEIN),
             new Ingredient("TMTO", "Diced Tomatoes", Type.VEGGIES),
             new Ingredient("LETC", "Lettuce", Type.VEGGIES),
             new Ingredient("CHED", "Cheddar", Type.CHEESE),
@@ -44,14 +45,16 @@ public class DesignTacoController {
         	model.addAttribute(type.toString().toLowerCase(),
         			filterByType(ingredients, type));
         }
-        
-        model.addAttribute("design", new Taco());
-        
-        return "design";
 	}
 	
+    @GetMapping
+    public String showDesignForm(Model model) {
+        model.addAttribute("design", new Taco());
+        return "design";
+    }
+	
 	@PostMapping
-	public String processDesign(@Valid Taco design, Errors errors) {
+	public String processDesign(@Valid @ModelAttribute("design") Taco design, Errors errors, Model model) {
 		log.info("processing design...");
 		if (errors.hasErrors()) {
 			return "design";

@@ -63,7 +63,7 @@ public class DesignAndOrderTacosBrowserTest {
     }
     
     @Test
-    public void testDesignATacoPage_EmptyOrderInfo() throws Exception {
+    public void testDesignATacoPageEmptyOrderInfo() throws Exception {
         browser.get(homePageUrl());
         
         clickDesignATaco();
@@ -76,7 +76,7 @@ public class DesignAndOrderTacosBrowserTest {
     }
 
     @Test
-    public void testDesignATacoPage_InvalidOrderInfo() throws Exception {
+    public void testDesignATacoPageInvalidOrderInfo() throws Exception {
         browser.get(homePageUrl());
         
         clickDesignATaco();

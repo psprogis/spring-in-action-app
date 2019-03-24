@@ -1,5 +1,6 @@
 package tacos.web;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,26 +17,33 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
+import lombok.extern.slf4j.Slf4j;
 import tacos.Ingredient;
 import tacos.Ingredient.Type;
 import tacos.Taco;
+import tacos.User;
 import tacos.data.IngredientRepository;
 import tacos.data.TacoRepository;
+import tacos.data.UserRepository;
 import tacos.Order;
 
 @Controller
 @RequestMapping("/design")
 @SessionAttributes("order")
+@Slf4j
 public class DesignTacoController {
 	
 	private final IngredientRepository ingredientRepo;	
 	private TacoRepository tacoRepo;
+	private UserRepository userRepo;
 	
 	@Autowired
     public DesignTacoController(IngredientRepository ingredientRepo,
-    		TacoRepository tacoRepo) {
+    		TacoRepository tacoRepo,
+    		UserRepository userRepo) {
 	    this.ingredientRepo = ingredientRepo;
 	    this.tacoRepo = tacoRepo;
+	    this.userRepo = userRepo;
 	}	
 	
     @ModelAttribute(name = "order")
@@ -43,13 +51,16 @@ public class DesignTacoController {
         return new Order();
     }
 	  
-    @ModelAttribute(name = "decign")
+    @ModelAttribute(name = "design")
     public Taco design() {
         return new Taco();
     }
 	
     @GetMapping
-    public String showDesignForm(Model model) {       
+    public String showDesignForm(Model model, Principal principal) {       
+        
+        log.info("Designing taco...");
+        
         List<Ingredient> ingredients = new ArrayList<>();
         ingredientRepo.findAll()
             .forEach(i -> ingredients.add(i));
@@ -60,6 +71,11 @@ public class DesignTacoController {
               filterByType(ingredients, type));      
         }
     	
+        String username = principal.getName();
+        User user = userRepo.findByUsername(username);
+        
+        model.addAttribute("user", user);
+        
         return "design";
     }
 	

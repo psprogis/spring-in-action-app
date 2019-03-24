@@ -29,7 +29,7 @@ public class UserRepositoryUserDetailsService
             return user;
         }
         
-        throw new UsernameNotFoundException("User '" + username + ", not found");
+        throw new UsernameNotFoundException("User '" + username + "' not found");
     }
 
 }

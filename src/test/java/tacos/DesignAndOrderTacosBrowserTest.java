@@ -52,6 +52,12 @@ public class DesignAndOrderTacosBrowserTest {
         browser.get(homePageUrl());
         
         clickDesignATaco();
+        assertLandedOnLoginPage();
+        
+        doRegistration("testuser", "testpassword");
+        assertLandedOnLoginPage();
+        doLogin("testuser", "testpassword");
+        
         assertDesignPageElements();
         buildAndSubmitATaco("Basic Taco", "FLTO", "GRBF", "CHED", "TMTO", "SLSA");
       
@@ -60,6 +66,8 @@ public class DesignAndOrderTacosBrowserTest {
         fillInAndSubmitOrderForm();
        
         assertEquals(homePageUrl(), browser.getCurrentUrl());
+        
+        doLogout();
     }
     
     @Test
@@ -67,12 +75,19 @@ public class DesignAndOrderTacosBrowserTest {
         browser.get(homePageUrl());
         
         clickDesignATaco();
+        assertLandedOnLoginPage();
+        
+        doRegistration("testuser2", "testpassword");
+        doLogin("testuser2", "testpassword");
+        
         assertDesignPageElements();
         buildAndSubmitATaco("Basic Taco", "FLTO", "GRBF", "CHED", "TMTO", "SLSA");
         submitEmptyOrderForm();
         fillInAndSubmitOrderForm();
         
         assertEquals(homePageUrl(), browser.getCurrentUrl());
+        
+        doLogout();
     }
 
     @Test
@@ -80,12 +95,19 @@ public class DesignAndOrderTacosBrowserTest {
         browser.get(homePageUrl());
         
         clickDesignATaco();
+        assertLandedOnLoginPage();
+        
+        doRegistration("testuser3", "testpassword");
+        doLogin("testuser3", "testpassword");
+        
         assertDesignPageElements();
         buildAndSubmitATaco("Basic Taco", "FLTO", "GRBF", "CHED", "TMTO", "SLSA");
         submitInvalidOrderForm();
         fillInAndSubmitOrderForm();
         
         assertEquals(homePageUrl(), browser.getCurrentUrl());
+        
+        doLogout();
     }
     
     // TODO: refactor to classes
@@ -101,6 +123,38 @@ public class DesignAndOrderTacosBrowserTest {
         browser.findElementByCssSelector("form").submit();
     }
 
+    private void assertLandedOnLoginPage() {
+        assertEquals(loginPageUrl(), browser.getCurrentUrl());
+    }
+    
+    private void doRegistration(String username, String password) {
+        browser.findElementByLinkText("here").click();
+        assertEquals(registrationPageUrl(), browser.getCurrentUrl());
+        browser.findElementByName("username").sendKeys(username);
+        browser.findElementByName("password").sendKeys(password);
+        browser.findElementByName("confirm").sendKeys(password);
+        browser.findElementByName("fullname").sendKeys("Test McTest");
+        browser.findElementByName("street").sendKeys("1234 Test Street");
+        browser.findElementByName("city").sendKeys("Testville");
+        browser.findElementByName("state").sendKeys("TX");
+        browser.findElementByName("zip").sendKeys("12345");
+        browser.findElementByName("phone").sendKeys("123-123-1234");
+        browser.findElementByCssSelector("form#registerForm").submit();
+    }
+    
+    private void doLogin(String username, String password) {
+        browser.findElementByCssSelector("input#username").sendKeys(username);
+        browser.findElementByCssSelector("input#password").sendKeys(password);
+        browser.findElementByCssSelector("form#loginForm").submit();
+    }
+    
+    private void doLogout() {
+        WebElement logoutForm = browser.findElementByCssSelector("form#logoutForm");
+        if (logoutForm != null) {
+            logoutForm.submit();
+        }
+    }
+    
     private void assertDesignPageElements() {
         assertEquals(designPageUrl(), browser.getCurrentUrl());
         List<WebElement> ingredientGroups = browser.findElementsByClassName("ingredient-group");
@@ -237,6 +291,14 @@ public class DesignAndOrderTacosBrowserTest {
     // TODO: remove to helper class
     // URL helper methods
     //
+    private String loginPageUrl() {
+        return homePageUrl() + "login";
+    }
+
+    private String registrationPageUrl() {
+        return homePageUrl() + "register";
+    }
+    
     private String designPageUrl() {
         return homePageUrl() + "design";
     }

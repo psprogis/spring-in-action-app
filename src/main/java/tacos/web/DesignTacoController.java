@@ -30,7 +30,6 @@ import tacos.Order;
 @Controller
 @RequestMapping("/design")
 @SessionAttributes("order")
-@Slf4j
 public class DesignTacoController {
 	
 	private final IngredientRepository ingredientRepo;	
@@ -58,9 +57,6 @@ public class DesignTacoController {
 	
     @GetMapping
     public String showDesignForm(Model model, Principal principal) {       
-        
-        log.info("Designing taco...");
-        
         List<Ingredient> ingredients = new ArrayList<>();
         ingredientRepo.findAll()
             .forEach(i -> ingredients.add(i));

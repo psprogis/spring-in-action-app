@@ -27,8 +27,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
-        .userDetailsService(userDetailsService)
-        .passwordEncoder(encoder());
+          .userDetailsService(userDetailsService)
+          .passwordEncoder(encoder());
     }
     
     @Override
@@ -37,7 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
                 .antMatchers("/design", "/orders")
                     .access("hasRole('ROLE_USER')")
-                .antMatchers("/", "/**")
+                .antMatchers("/**")
                     .access("permitAll")
             .and()
                 .formLogin()
